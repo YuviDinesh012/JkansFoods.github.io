@@ -1,38 +1,22 @@
 'use strict';
 
-
-
-/**
- * PRELOAD
- * 
- * loading will be end after document is loaded
- */
-
+// PRELOAD
 const preloader = document.querySelector("[data-preaload]");
-
 window.addEventListener("load", function () {
   preloader.classList.add("loaded");
+  preloader.style.opacity = "0";
+  preloader.style.visibility = "hidden";
   document.body.classList.add("loaded");
 });
 
-
-
-/**
- * add event listener on multiple elements
- */
-
+// Add event listener on multiple elements
 const addEventOnElements = function (elements, eventType, callback) {
   for (let i = 0, len = elements.length; i < len; i++) {
     elements[i].addEventListener(eventType, callback);
   }
 }
 
-
-
-/**
- * NAVBAR
- */
-
+// NAVBAR
 const navbar = document.querySelector("[data-navbar]");
 const navTogglers = document.querySelectorAll("[data-nav-toggler]");
 const overlay = document.querySelector("[data-overlay]");
@@ -45,15 +29,18 @@ const toggleNavbar = function () {
 
 addEventOnElements(navTogglers, "click", toggleNavbar);
 
+const navLinks = document.querySelectorAll(".navbar-link");
+navLinks.forEach(link => {
+  link.addEventListener("click", () => {
+    navbar.classList.remove("active");
+    overlay.classList.remove("active");
+    document.body.classList.remove("nav-active");
+  });
+});
 
-
-/**
- * HEADER & BACK TOP BTN
- */
-
+// HEADER & BACK TOP BTN
 const header = document.querySelector("[data-header]");
 const backTopBtn = document.querySelector("[data-back-top-btn]");
-
 let lastScrollPos = 0;
 
 const hideHeader = function () {
@@ -63,32 +50,32 @@ const hideHeader = function () {
   } else {
     header.classList.remove("hide");
   }
-
   lastScrollPos = window.scrollY;
 }
 
+let isScrolling = false;
 window.addEventListener("scroll", function () {
-  if (window.scrollY >= 50) {
-    header.classList.add("active");
-    backTopBtn.classList.add("active");
-    hideHeader();
-  } else {
-    header.classList.remove("active");
-    backTopBtn.classList.remove("active");
+  if (!isScrolling) {
+    window.requestAnimationFrame(() => {
+      if (window.scrollY >= 50) {
+        header.classList.add("active");
+        backTopBtn.classList.add("active");
+        hideHeader();
+      } else {
+        header.classList.remove("active");
+        backTopBtn.classList.remove("active");
+      }
+      isScrolling = false;
+    });
+    isScrolling = true;
   }
 });
 
-
-
-/**
- * HERO SLIDER
- */
-
+// HERO SLIDER
 const heroSlider = document.querySelector("[data-hero-slider]");
 const heroSliderItems = document.querySelectorAll("[data-hero-slider-item]");
 const heroSliderPrevBtn = document.querySelector("[data-prev-btn]");
 const heroSliderNextBtn = document.querySelector("[data-next-btn]");
-
 let currentSlidePos = 0;
 let lastActiveSliderItem = heroSliderItems[0];
 
@@ -99,72 +86,42 @@ const updateSliderPos = function () {
 }
 
 const slideNext = function () {
-  if (currentSlidePos >= heroSliderItems.length - 1) {
-    currentSlidePos = 0;
-  } else {
-    currentSlidePos++;
-  }
-
+  currentSlidePos = (currentSlidePos >= heroSliderItems.length - 1) ? 0 : currentSlidePos + 1;
   updateSliderPos();
 }
-
-heroSliderNextBtn.addEventListener("click", slideNext);
 
 const slidePrev = function () {
-  if (currentSlidePos <= 0) {
-    currentSlidePos = heroSliderItems.length - 1;
-  } else {
-    currentSlidePos--;
-  }
-
+  currentSlidePos = (currentSlidePos <= 0) ? heroSliderItems.length - 1 : currentSlidePos - 1;
   updateSliderPos();
 }
 
-heroSliderPrevBtn.addEventListener("click", slidePrev);
+const resetAutoSlide = function () {
+  clearInterval(autoSlideInterval);
+  autoSlide();
+};
 
-/**
- * auto slide
- */
+heroSliderNextBtn.addEventListener("click", () => { slideNext(); resetAutoSlide(); });
+heroSliderPrevBtn.addEventListener("click", () => { slidePrev(); resetAutoSlide(); });
 
 let autoSlideInterval;
-
 const autoSlide = function () {
-  autoSlideInterval = setInterval(function () {
-    slideNext();
-  }, 7000);
+  autoSlideInterval = setInterval(slideNext, 7000);
 }
 
-addEventOnElements([heroSliderNextBtn, heroSliderPrevBtn], "mouseover", function () {
-  clearInterval(autoSlideInterval);
-});
-
+addEventOnElements([heroSliderNextBtn, heroSliderPrevBtn], "mouseover", () => clearInterval(autoSlideInterval));
 addEventOnElements([heroSliderNextBtn, heroSliderPrevBtn], "mouseout", autoSlide);
-
 window.addEventListener("load", autoSlide);
 
-
-
-/**
- * PARALLAX EFFECT
- */
-
+// PARALLAX EFFECT
 const parallaxItems = document.querySelectorAll("[data-parallax-item]");
 
-let x, y;
-
 window.addEventListener("mousemove", function (event) {
+  const xOffset = ((event.clientX / window.innerWidth) * 10 - 5) * -1;
+  const yOffset = ((event.clientY / window.innerHeight) * 10 - 5) * -1;
 
-  x = (event.clientX / window.innerWidth * 10) - 5;
-  y = (event.clientY / window.innerHeight * 10) - 5;
-
-  // reverse the number eg. 20 -> -20, -5 -> 5
-  x = x - (x * 2);
-  y = y - (y * 2);
-
-  for (let i = 0, len = parallaxItems.length; i < len; i++) {
-    x = x * Number(parallaxItems[i].dataset.parallaxSpeed);
-    y = y * Number(parallaxItems[i].dataset.parallaxSpeed);
-    parallaxItems[i].style.transform = `translate3d(${x}px, ${y}px, 0px)`;
-  }
-
+  parallaxItems.forEach(item => {
+    const itemX = xOffset * Number(item.dataset.parallaxSpeed);
+    const itemY = yOffset * Number(item.dataset.parallaxSpeed);
+    item.style.transform = `translate3d(${itemX}px, ${itemY}px, 0px)`;
+  });
 });
