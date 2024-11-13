@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -122,7 +123,7 @@
         <ul class="navbar-list">
 
           <li class="navbar-item">
-            <a href="#home" class="navbar-link hover-underline active">
+            <a href="#home" onclick="closeSideBar()" class="navbar-link hover-underline active">
               <div class="separator"></div>
 
               <span class="span">Home</span>
@@ -130,7 +131,7 @@
           </li>
 
           <li class="navbar-item">
-            <a href="#about" class="navbar-link hover-underline">
+            <a href="#about" onclick="closeSideBar()" class="navbar-link hover-underline">
               <div class="separator"></div>
 
               <span class="span">About Us</span>
@@ -138,7 +139,7 @@
           </li>
 
           <li class="navbar-item">
-            <a href="#special" class="navbar-link hover-underline">
+            <a href="#special" onclick="closeSideBar()" class="navbar-link hover-underline">
               <div class="separator"></div>
 
               <span class="span">Special Dish</span>
@@ -146,7 +147,7 @@
           </li>
 
           <li class="navbar-item">
-            <a href="#menu" class="navbar-link hover-underline">
+            <a href="#menu" onclick="closeSideBar()" class="navbar-link hover-underline">
               <div class="separator"></div>
 
               <span class="span">Menus</span>
@@ -154,7 +155,7 @@
           </li>
 
           <li class="navbar-item">
-            <a href="#contact" class="navbar-link hover-underline">
+            <a href="#contact" onclick="closeSideBar()" class="navbar-link hover-underline">
               <div class="separator"></div>
 
               <span class="span">Contact</span>
@@ -956,7 +957,18 @@
       }
     }
     </script>
-
+    <script>
+      function closeSideBar() {
+        const closeButton = document.querySelector('.close-btn');
+  
+        // Trigger the click event on the button
+        if (closeButton) {
+          
+          closeButton.click();
+          console.log("clicked");
+        }
+      }
+    </script>
 </body>
 
 </html>
