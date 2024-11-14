@@ -7,6 +7,7 @@ const app = express();
 
 // Middleware to parse incoming request data and handle CORS
 app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,14 +19,14 @@ app.post('/send-feedback', (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'yuvidinesh012@gmail.com',
-            pass: 'akzx iris bgdr gtto'
+            user: 'jkansfoodskalavasal@gmail.com',
+            pass: 'grcb rkyx weds xxcm'
         }
     });
 
     const mailOptions = {
         from: email, // Sender's email
-        to: 'recipient_email@example.com', // Receiver's email (can be the same or different)
+        to: 'jkansfoodskalavasal@gmail.com', // Receiver's email (can be the same or different)
         subject: `Feedback from ${name}`,
         html: `
             <p><strong>Name:</strong> ${name}</p>
@@ -43,6 +44,7 @@ app.post('/send-feedback', (req, res) => {
         res.status(200).json({ message: 'Feedback sent successfully!' });
     });
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
